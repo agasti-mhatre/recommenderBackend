@@ -31,7 +31,6 @@ public class DynamoDBConfiguration {
             .credentialsProvider(StaticCredentialsProvider.create(credentials))
             .build();
 
-
     return conn;
   }
 
