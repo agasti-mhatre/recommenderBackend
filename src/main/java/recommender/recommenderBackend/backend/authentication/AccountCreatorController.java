@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-
 @RestController
 public class AccountCreatorController {
 
@@ -14,10 +12,15 @@ public class AccountCreatorController {
   UserInfoRepository userInfoRepository;
 
   @PostMapping("/createAccount")
-  public void createAccount(@RequestBody AccountDTO accountDTO) {
+  public String createAccount(@RequestBody AccountDTO accountDTO) {
 
+    if (userInfoRepository.hasItem(accountDTO.getUsername())) {
 
+      return "Username already exists";
+    }
 
+    userInfoRepository.createAccount(accountDTO);
+    return "Created user";
   }
 
 }
