@@ -1,4 +1,4 @@
-package recommender.recommenderBackend.backend.repository;
+package recommender.recommenderBackend.backend.listRetrieval;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -12,14 +12,10 @@ import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
 
 @Repository
-public class DynamoDBRepository {
-
-  private final DynamoDbClient dynamoDBClient;
+public class ListsRepository {
 
   @Autowired
-  public DynamoDBRepository (DynamoDbClient dynamoDBClient) {
-    this.dynamoDBClient = dynamoDBClient;
-  }
+  private DynamoDbClient dynamoDBClient;
 
   public Map<String, AttributeValue> getItem(String id) {
 
