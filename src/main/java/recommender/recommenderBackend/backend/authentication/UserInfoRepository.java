@@ -2,7 +2,6 @@ package recommender.recommenderBackend.backend.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.w3c.dom.Attr;
 
 import java.util.HashMap;
 import java.util.Map;
