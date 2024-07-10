@@ -1,48 +1,63 @@
 package recommender.recommenderBackend.backend.authentication;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import java.time.LocalDate;
 import java.util.Date;
 
+import javax.crypto.spec.SecretKeySpec;
+
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JWTUtil {
 
-  private static String generateToken(ExpirationLength tokenType) {
+  public static String generateToken(ExpirationLength tokenType) {
 
     int expTime[] = getExpLength(tokenType);
 
     LocalDate currDate = LocalDate.now();
-    String secret = "abc123";
 
     return Jwts.builder()
             .subject("davey_the_sus_one")
             .claim("name", "Davey McWavey")
             .claim("email", "BruhMoment@sus.com")
             .issuedAt(new Date())
-            .expiration(new Date(expTime[0] + currDate.getYear(), currDate.getMonthValue(), currDate.getDayOfMonth()))
-            .signWith(SignatureAlgorithm.HS256, secret)
+            .expiration(new Date(expTime[0] + currDate.getYear(), expTime[1] + currDate.getMonthValue(), expTime[2] + currDate.getDayOfMonth()))
+            .signWith(SignatureAlgorithm.HS256, getSecretKey())
             .compact();
 
   }
 
-  public static void parseToken() {
+  public static String parseToken(String token) {
 
-    Jws<Claims> jwsClaims = null;
+    Claims jwsClaim = Jwts.parser()
+            .verifyWith(getSecretKey())
+            .build()
+            .parseSignedClaims(token)
+            .getPayload();
 
+    String subject = jwsClaim.getSubject();
+    String name = jwsClaim.get("name", String.class);
+    String email = jwsClaim.get("email", String.class);
+
+    return email;
   }
-
 
   private static int[] getExpLength(ExpirationLength tokenType) {
 
     if (tokenType == ExpirationLength.ACCESS_TOKEN) {
-      return new int[]{1, 2, 3};
+      return new int[]{0, 0, 2};
     }
 
-    return new int[]{1, 2, 3};
+    return new int[]{1, 0, 0};
+  }
+
+  private static SecretKeySpec getSecretKey() {
+
+    //Signing key has to be at least 256 bits
+    return new SecretKeySpec(
+            "abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".getBytes(),
+            SignatureAlgorithm.HS256.getJcaName()
+            );
   }
 }
